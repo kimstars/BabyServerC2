@@ -254,7 +254,8 @@ class TaskDAO:
         else:
             task = self.get_task(task_dict.get('uid'))
             if task:
-                task.result = task_dict.get('result')
+                # task.result = task_dict.get('result')
+                task.result = "done"
                 task.completed = datetime.utcnow()
         db.session.commit()
         return task_dict
