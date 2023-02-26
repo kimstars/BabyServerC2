@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'Persistence (Build Your Own Botnet)'
+'Persistence (BabyBotNet)'
 
 # standard libarary
 import os
@@ -74,7 +74,7 @@ exit""")
 # main
 class Method():
     """
-    Persistence Method (Build Your Own Botnet)
+    Persistence Method (BabyBotNet)
 
     """
     def __init__(self, name, platforms=['win32','linux','linux2','darwin']):

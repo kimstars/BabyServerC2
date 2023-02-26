@@ -14,7 +14,7 @@
 
 {% block main %}
 
-<div class="container" style="z-index: 1; position: absolute; top: 0%; left: 50%; transform: translate(-50%, -100%);">
+<div class="container" style="z-index: 1; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -100%);">
 
 	<script src="https://code.jquery.com/jquery-latest.js"></script>
 
@@ -117,32 +117,54 @@
 	</script>
 
 	<script>
+
+		var path = 'C:\\Windows\\system32'
+		function term_get_prompt() {
+			// cmd.exe alike command shell prompt
+			return path + '> '
+		}	
+
 		jQuery(function($, undefined) {
-		    $('#byob_terminal').terminal(function(command) {
-		        if (command !== '' && command !== ' ' && command !== '\n'	) {
-		            try {
-		                var terminal = this;
-		                $.post("{{ url_for('session.session_cmd') }}", {session_uid: getParameterByName('session_uid'), cmd: command}, function(response) {
-		                		try {
-									let data = JSON.parse(response);
-									let output = JSON.stringify(data, null, 2);
-									terminal.echo(output);
-		                		} catch (e) {
-		                			terminal.echo('');
-		                			terminal.echo(response);
-		                		}
-		                });
-		            } catch(e) {
-		                this.error(new String(e));
-		            }
-		        } else {
-		           this.echo('');
-		        }
+		    $('#byob_terminal').terminal(function(command, term) {
+				if (command.length == 0) {
+					return
+				}
+				term.pause()
+				
+				try {
+					var terminal = this;
+					$.post("{{ url_for('session.session_cmd') }}", 
+					{session_uid: getParameterByName('session_uid'), 
+					cmd: command}, function(response) {
+							try {
+								var m = /{{{\+ \r\n(.+)\r\n\+}}}\r\n/g.exec(response)
+								if (m != null) {
+									path = m[1]
+									response = response.split(m[0]).join('')
+				
+									// update prompt
+									term.set_prompt(term_get_prompt())
+								}
+
+								term.set_prompt(term_get_prompt())
+								terminal.echo(response);
+								term.resume();
+
+							} catch (e) {
+								terminal.echo('');
+								terminal.echo(response);
+							}
+					});
+				} catch(e) {
+					this.error(new String(e));
+				}
+			
 		    }, {
-		        greetings: 'Build Your Own Botnet - Reverse TCP Shell',
+		        greetings: 'BabyBotNet - Reverse TCP Shell\n[[;#ff0;#000] * Shell is not interactive, please be careful what you execute]\n' +
+				'[[;#ff0;#000] * Command execution timeout is set to 30 seconds]\n\n',
 		        name: 'byob',
-		        height: 200,
-		        prompt: '{{info["username"]}}' + '@' + '{{info["public_ip"]}}> ',
+		        height: 500,
+		        prompt: term_get_prompt(),
 		    });
 		});
 	</script>

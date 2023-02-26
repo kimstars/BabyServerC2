@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""Routes (Build Your Own Botnet)"""
+"""Routes (BabyBotNet)"""
 
 import os
 import sys

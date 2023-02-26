@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'Webcam (Build Your Own Botnet)'
+'Webcam (BabyBotNet)'
 
 # standard libarary
 import os

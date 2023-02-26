@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'Screenshot (Build Your Own Botnet)'
+'Screenshot (BabyBotNet)'
 
 # standard library
 import base64

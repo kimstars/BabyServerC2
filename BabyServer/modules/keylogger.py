@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'Keylogger (Build Your Own Botnet)'
+'Keylogger (BabyBotNet)'
 
 # standard library
 import os

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'Utilities (Build Your Own Botnet)'
+'Utilities (BabyBotNet)'
 from __future__ import print_function
 
 import colorama

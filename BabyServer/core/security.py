@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'Security (Build Your Own Botnet)'
+'Security (BabyBotNet)'
 
 # standard library
 import os

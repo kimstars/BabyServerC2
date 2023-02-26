@@ -6,7 +6,7 @@ from flask import (
 	request, url_for, send_from_directory
 )
 from flask_login import login_user, logout_user, current_user, login_required
-# from BabyServer import client, c2
+from BabyServer import c2
 from BabyServer.core.dao import user_dao
 from BabyServer.users.forms import RegistrationForm, LoginForm, UpdateAccountForm, ResetPasswordForm
 from BabyServer.models import db, bcrypt, User, Session

@@ -1,6 +1,6 @@
     #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'Port Scanner (Build Your Own Botnet)'
+'Port Scanner (BabyBotNet)'
 
 # standard libarary
 import os

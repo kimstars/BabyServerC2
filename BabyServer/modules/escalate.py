@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'Escalate Privileges (Build Your Own Botnet)'
+'Escalate Privileges (BabyBotNet)'
 
 # standard library
 import os

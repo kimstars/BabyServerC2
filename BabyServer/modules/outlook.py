@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'Outlook Email (Build Your Own Botnet)'
+'Outlook Email (BabyBotNet)'
 
 # standard library
 import sys

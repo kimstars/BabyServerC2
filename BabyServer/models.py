@@ -42,6 +42,18 @@ class Session(db.Model):
 	platform = db.Column(db.String(5))
 	device = db.Column(db.String(32))
 	architecture = db.Column(db.String(2))
+ 
+	process = db.Column(db.String(100))
+	integrity = db.Column(db.String(32))
+	pid = db.Column(db.Integer)
+	"""
+	alter table session add column process VARCHAR(100);
+	alter table session add column integrity VARCHAR(32);
+	alter table session add pid integrity INTEGER;
+ 
+	
+	"""
+
 	latitude = db.Column(db.Float)
 	longitude = db.Column(db.Float)
 	new = db.Column(db.Boolean, default=True, nullable=False)
@@ -68,7 +80,11 @@ class Session(db.Model):
 			"architecture": self.architecture,
 			"latitude": self.latitude,
 			"longitude": self.longitude,
-			"owner": self.owner
+			"owner": self.owner,
+   
+			"process": self.process,
+			"pid": self.pid,
+			"integrity": self.integrity
 		}
 
 class Task(db.Model):

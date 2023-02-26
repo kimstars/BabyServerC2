@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'Packet Sniffer (Build Your Own Botnet)'
+'Packet Sniffer (BabyBotNet)'
 
 # standard libarary
 import time

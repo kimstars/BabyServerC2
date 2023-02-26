@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-'Loader (Build Your Own Botnet)'
+'Loader (BabyBotNet)'
 
 # standard library
 import imp
