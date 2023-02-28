@@ -55,7 +55,7 @@
 									<div id="module-description" style="padding-top: 10px">Module usage information </strong>will appear here.</div>
 
 								 	<ul name="module-info" id="module-info" align="left">
-<							 		{% if not sessions %}
+							 		{% if not sessions %}
 									 		<li>
 										 		<a href="{{ url_for('main.payloads') }}" class="module-panel-link" style="font-weight: bold;">Generate a payload</a> and run it on the target system to create a bot.
 											</li>	 			
@@ -65,7 +65,7 @@
 									 		<li>
 									 			Need help? Check out the <a href="{{ url_for('main.faq') }}" class="module-panel-link">FAQ</a> section.</a> 
 									 		</li>
-								 		{% endif %} -->
+								 		{% endif %} 
 								 	</ul>
 
 									<div id="module-platforms"></div>
@@ -246,6 +246,10 @@
 						location.href="/shell?session_uid="+element.getAttribute('name');
 					}
 
+					function launchFileManager(element) {
+						location.href="/flist?session_uid="+element.getAttribute('name')+"&path=";
+					}
+
 					function removeSession(element) {
 						$.post("{{ url_for('session.session_remove') }}", {session_uid: element.getAttribute('name')},
 								function(response) {
@@ -400,6 +404,9 @@
 							<!-- Shell buttons -->
 							<th style="color: black; text-align: center; vertical-align: middle;">Shell</th>
 
+							<!-- File Manager buttons -->
+							<th style="color: black; text-align: center; vertical-align: middle;">File Manager</th>
+
 							<!-- Results buttons -->
 							<th style="color: black; text-align: center; vertical-align: middle;">History</th>
 
@@ -436,7 +443,9 @@
 
 							<!-- Platform icon -->
 							<td style="text-align: center; vertical-align: middle;" width="15%">
-								<img src="/assets/images/os/{{ session['platform'] }}.png" width="30" height="30" style="padding: 2px">
+								<!-- <img src="/assets/images/os/{{ session['platform'] }}.png" width="30" height="30" style="padding: 2px"> -->
+								<img src="/assets/images/os/win32.png" width="30" height="30" style="padding: 2px">
+
 								{% if session['platform'] == 'win32' %}
 									<!-- <i class="fa fa-windows" style="font-size: medium;">  -->Windows
 								{% elif session['platform'] == 'darwin' %}
@@ -468,6 +477,15 @@
 									<img class="session-row-icon" src="/assets/images/iconfinder_terminal.png" width="30" height="30" style="padding: 2px" name="{{ session['uid'] }}" onclick="launchSession(this)">
 								{% else %}
 									<img class="session-row-icon" src="/assets/images/iconfinder_terminal.png" width="30" height="30" style="padding: 2px" name="{{ session['uid'] }}" onclick="alert('Bot is offline.')">
+								{% endif %}
+							</td>
+
+							<!-- FileList button -->
+							<td class="text-center">
+								{% if session['online'] %}
+									<img class="session-row-icon" src="/assets/images/iconfinder_screenshot.png" width="30" height="30" style="padding: 2px" name="{{ session['uid'] }}" onclick="launchFileManager(this)">
+								{% else %}
+									<img class="session-row-icon" src="/assets/images/iconfinder_screenshot.png" width="30" height="30" style="padding: 2px" name="{{ session['uid'] }}" onclick="alert('Bot is offline.')">
 								{% endif %}
 							</td>
 

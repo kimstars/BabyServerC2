@@ -234,6 +234,7 @@ class ClientHelper(object):
 
         # send command string
         self.sendall(cmd.encode('UTF-8') + b'\n')
+        print("DEBUG cmd =>",cmd )
 
         ret, code = '', None
 
@@ -241,20 +242,23 @@ class ClientHelper(object):
 
             # receive the command output
             data = self.recv(Conf.BUFF_SIZE).decode()
+            
             assert len(data) > 0            
-
+            
             m = self._is_end_of_output(data)
             if m is not None:
 
                 # end of the command output
                 data, code = m
-
+            if "{" in data:
+                continue
+            
             ret += data            
 
             if m is not None: 
 
                 break
-
+        
         # ret = ret.decode('UTF-8')
 
         if stream is not None: 
@@ -468,7 +472,7 @@ class ClientHelper(object):
             # command failed
             print('ERROR: file_list() failed with code 0x%.8x\n' % code)
             return None
-
+        print("DEBUG FLIST DATA=========>",data)
         ret = []
 
         # enumerate results

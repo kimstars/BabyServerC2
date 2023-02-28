@@ -422,7 +422,11 @@ class SessionThread(threading.Thread):
       
         
         # return info
-
+    def list_dir_file(self, path):
+        
+        files = self.helper.file_list(path)
+        return files
+    
     def send_task(self, task):
         """
         Send task results to the server

