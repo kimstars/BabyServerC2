@@ -42,7 +42,7 @@ class Session(db.Model):
 	platform = db.Column(db.String(5))
 	device = db.Column(db.String(32))
 	architecture = db.Column(db.String(2))
- 
+
 	process = db.Column(db.String(100))
 	integrity = db.Column(db.String(32))
 	pid = db.Column(db.Integer)
